@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NFTCard Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .hero {
+            background: linear-gradient(135deg, #ff6b6b, #0d0c65);
+            color: #FFFFFF;
+            padding: 150px 0;
+            text-align: center;
+            position: relative;
+            height: 100vh;
+        }
+
+        .hero h1 {
+            font-weight: 600;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .hero p {
+            font-weight: 400;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #ff6b6b, #0d0c65);
+        }
+        .navbar a.navbar-brand {
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .navbar a.nav-link {
+            color: #FFFFFF;
+            font-size: 1rem;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #ff6b6b, #0d0c65);
+            color: #FFFFFF;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .navbar-logo {
+            background-image: url('https://png.pngtree.com/png-vector/20220717/ourmid/pngtree-nft-crypto-token-png-image-png-image_5999373.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            width: 60px;
+            height: 50px;
+            display: inline-block;
+        }
+
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-danger-subtle">
+    <div class="container-fluid">
+        <a class="navbar-brand navbar-logo" href="#"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Home</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                    <a class="nav-link" aria-current="page" href="/collection">Collection</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                    <a class="nav-link" aria-current="page" href="/card">NFTCard</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="isAuthenticated() and hasAuthority('USER')">
+                    <a class="nav-link" aria-current="page" href="/buy">Buy Crypto</a>
+                </li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated() and hasAuthority('USER')">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Pool
+                    </a>
+                    <ul class="dropdown-menu" sec:authorize="isAuthenticated() and hasAuthority('USER')">
+                        <li><a class="dropdown-item" href="/buy/card">Buy NFTCard</a></li>
+                        <li><a class="dropdown-item" href="/user/card">Sell NFTCard</a></li>
+                        <hr>
+                        <li><a class="dropdown-item" href="/transaction">Transaction History</a></li>
+                        <li><a class="dropdown-item" href="/transaction/nft">NFT Purchases</a></li>
+                    </ul>
+                </li>
+
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Wallet
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fab fa-bitcoin" style="color: #FFD700;"></i></span>
+                                <span th:text="${btc}"></span>
+                            </div>
+                        </li>
+                        <li class="dropdown-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fab fa-ethereum" style="color: #0074CC;"></i></span>
+                                <span th:text="${eth}"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+
+
+            </ul>
+
+
+
+
+
+            <a th:if="${not #authorization.expression('isAuthenticated()')}" href="/login">
+                <i class="fas fa-sign-in-alt"></i>
+            </a>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <a th:if="${not #authorization.expression('isAuthenticated()')}" href="/register">
+                <i class="fas fa-user-plus"></i>
+            </a>
+
+            <span th:if="${#authorization.expression('isAuthenticated()')}" style="color: blue; margin-right: 15px;">
+                <i class="fas fa-user"></i> <span th:text="${#authentication.principal.username}"></span>
+            </span>
+
+
+            <a th:if="${#authorization.expression('isAuthenticated()')}" href="/logout" style="margin-right: 10px">
+                <i class="fas fa-sign-in-alt"></i>
+            </a>
+
+        </div>
+    </div>
+    <style>
+
+    </style>
+</nav>
+
+<br>
+
+<div class="d-flex justify-content-center align-items-center">
+    <form method="get" action="/card/add">
+        <button type="submit" class="btn btn-primary">Add Card</button>
+    </form>
+</div>
+
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Price</th>
+        <th scope="col">Collection</th>
+        <th scope="col">Image</th>
+        <th scope="col">Action #1</th>
+        <th scope="col">Action #2</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c,num : ${cards}">
+        <th th:text="${num.count}" scope="row"></th>
+        <td th:text="${c.name}"></td>
+        <td th:text="${c.price}"></td>
+        <td th:text="${c.collection.name}"></td>
+        <td><img th:src="'data:image/jpeg;base64,' + ${c.getImageBase64()}" width="50px" height="50px"/></td>
+        <td>
+            <form method="get" th:action="@{'/card/edit/{id}' (id = ${c.id})}" >
+                <button type="submit" class="btn btn-danger">Edit</button>
+            </form>
+        </td>
+        <td>
+            <form method="post" th:action="@{'/card/delete/{id}' (id = ${c.id})}" >
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+
+
+
+<div class="modal" id="myModal" th:if="${message != null}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">WARNING</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+
+            <div class="modal-body">
+                <p th:text="${message}"></p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:if="${message != null}">
+    $(document).ready(function() {
+        $('#myModal').modal('show'); // Trigger the modal
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</body>
+</html>

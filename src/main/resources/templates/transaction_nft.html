@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Transaction Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #ff6b6b, #0d0c65);
+            color: #FFFFFF;
+            padding: 150px 0;
+            text-align: center;
+            position: relative;
+            height: 100vh;
+        }
+
+        .hero h1 {
+            font-weight: 600;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-weight: 400;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #ff6b6b, #0d0c65);
+        }
+
+        .navbar a.navbar-brand {
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .navbar a.nav-link {
+            color: #FFFFFF;
+            font-size: 1rem;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #ff6b6b, #0d0c65);
+            color: #FFFFFF;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .table-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .custom-select-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 200px; /* Adjust the width as needed */
+        }
+
+        .custom-select {
+            width: 100%;
+            padding: 0.375rem 2rem 0.375rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            appearance: none;
+        }
+
+        .custom-select:focus {
+            border-color: #86b7fe;
+            outline: 0;
+        }
+
+        .custom-select-arrow {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+        }
+
+        .date-filter {
+            display: flex;
+            align-items: center;
+        }
+
+        .date-filter .form-label {
+            font-weight: bold;
+            margin-right: 10px; /* Add some spacing between label and input */
+        }
+
+        .date-filter .small-date-input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100px; /* Adjust the width as needed */
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter {
+            display: flex;
+            align-items: center;
+            margin-right: 20px; /* Add some spacing between filters */
+        }
+
+        .filter .form-label {
+            font-weight: bold;
+            margin-right: 5px; /* Add some spacing between label and input */
+        }
+
+        .small-date-input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100px; /* Adjust the width as needed */
+        }
+
+
+
+        .filter-container {
+            display: flex;
+            justify-content: center; /* Center items horizontally */
+            align-items: center;
+            flex-wrap: wrap; /* Wrap filters to the next line if necessary */
+        }
+
+        .filter {
+            display: flex;
+            align-items: center;
+            margin-right: 20px; /* Add some spacing between filters */
+        }
+
+        .filter .form-label {
+            font-weight: bold;
+            margin-right: 5px; /* Add some spacing between label and input */
+        }
+
+        .small-date-input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100px; /* Adjust the width as needed */
+        }
+
+        .navbar-logo {
+            background-image: url('https://png.pngtree.com/png-vector/20220717/ourmid/pngtree-nft-crypto-token-png-image-png-image_5999373.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            width: 60px;
+            height: 50px;
+            display: inline-block;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-danger-subtle">
+    <div class="container-fluid">
+        <a class="navbar-brand navbar-logo" href="#"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Home</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                    <a class="nav-link" aria-current="page" href="/collection">Collection</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                    <a class="nav-link" aria-current="page" href="/card">NFTCard</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="isAuthenticated() and hasAuthority('USER')">
+                    <a class="nav-link" aria-current="page" href="/buy">Buy Crypto</a>
+                </li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated() and hasAuthority('USER')">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Pool
+                    </a>
+                    <ul class="dropdown-menu" sec:authorize="isAuthenticated() and hasAuthority('USER')">
+                        <li><a class="dropdown-item" href="/buy/card">Buy NFTCard</a></li>
+                        <li><a class="dropdown-item" href="/user/card">Sell NFTCard</a></li>
+                        <hr>
+                        <li><a class="dropdown-item" href="/transaction">Transaction History</a></li>
+                        <li><a class="dropdown-item" href="/transaction/nft">NFT Purchases</a></li>
+                    </ul>
+                </li>
+
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Wallet
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fab fa-bitcoin" style="color: #FFD700;"></i></span>
+                                <span th:text="${btc}"></span>
+                            </div>
+                        </li>
+                        <li class="dropdown-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fab fa-ethereum" style="color: #0074CC;"></i></span>
+                                <span th:text="${eth}"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+
+
+            </ul>
+
+
+            <a th:if="${not #authorization.expression('isAuthenticated()')}" href="/login">
+                <i class="fas fa-sign-in-alt"></i>
+            </a>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <a th:if="${not #authorization.expression('isAuthenticated()')}" href="/register">
+                <i class="fas fa-user-plus"></i>
+            </a>
+
+            <span th:if="${#authorization.expression('isAuthenticated()')}" style="color: blue; margin-right: 15px;">
+                <i class="fas fa-user"></i> <span th:text="${#authentication.principal.username}"></span>
+            </span>
+
+
+            <a th:if="${#authorization.expression('isAuthenticated()')}" href="/logout" style="margin-right: 10px">
+                <i class="fas fa-sign-in-alt"></i>
+            </a>
+
+        </div>
+    </div>
+    <style>
+
+    </style>
+</nav>
+
+<br>
+
+<div class="table-container">
+    <div class="table-container">
+        <div class="mb-3">
+            <div class="filter-container">
+                <div class="filter">
+                    <label for="wallet-type" class="form-label">Filter by Wallet Type:</label>
+                    <div class="custom-select-wrapper">
+                        <select class="custom-select" id="wallet-type">
+                            <option value="all">All</option>
+                            <option value="BUY">Buy</option>
+                            <option value="SELL">Sell</option>
+                        </select>
+                        <div class="custom-select-arrow"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-striped" id="transaction-table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Card</th>
+                <th scope="col">Collection</th>
+                <th scope="col">Transaction Type</th>
+                <th scope="col">Amount ($)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t,num : ${transactions}">
+                <th th:text="${num.count}" scope="row"></th>
+                <td th:text="${t.card.name}"></td>
+                <td th:text="${t.card.collection.name}"></td>
+                <td th:text="${t.transactionType}"></td>
+                <td th:text="${t.amount}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        var selectedWalletType = "all";
+
+
+        function updateTableRows() {
+            $("#transaction-table tbody tr").each(function () {
+                var cryptoType = $(this).find("td:nth-child(4)").text();
+
+
+                var walletTypeMatch = (selectedWalletType === "all" || cryptoType.includes(selectedWalletType));
+
+                if (walletTypeMatch) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+
+        $("#wallet-type").change(function () {
+            selectedWalletType = $(this).val();
+            updateTableRows();
+        });
+
+    });
+
+
+
+</script>
+</body>
+</html>
